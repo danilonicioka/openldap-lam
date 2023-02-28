@@ -1,0 +1,27 @@
+apiVersion: v1
+entries:
+  openldap:
+  - apiVersion: v2
+    appVersion: 1.5.0
+    created: "2023-02-28T10:14:53.66434498-03:00"
+    dependencies:
+    - name: lam
+      repository: ""
+    description: Open implementation of the ldap standard based on osixia/docker-openldap
+    digest: c858b69b9a34a11a091dad52d1fc2f6c88b0c33dde6f74ad3b337d6cb965b644
+    home: https://www.openldap.org
+    icon: http://www.openldap.org/images/headers/LDAPworm.gif
+    keywords:
+    - ldap
+    - openldap
+    maintainers:
+    - name: Lukas Paluch
+      url: https://github.com/fluktuid/
+    name: openldap
+    sources:
+    - https://github.com/fluktuid/helm-charts
+    type: application
+    urls:
+    - openldap-0.1.1.tgz
+    version: 0.1.1
+generated: "2023-02-28T10:14:53.662589954-03:00"
