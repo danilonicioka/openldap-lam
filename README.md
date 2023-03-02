@@ -1,14 +1,56 @@
 # Helm Chart para Openldap
 
-Baseado no helm chart do [fluktuid](https://artifacthub.io/packages/helm/fluktuid/openldap), o qual utiliza a imagem do [osixia](https://github.com/osixia/docker-openldap) e no helm chart do [gabibbo97](https://artifacthub.io/packages/helm/gabibbo97/ldap-account-manager), o qual utiliza a imagem oficial do ldap account manager
+Baseado no helm chart do [fluktuid](https://artifacthub.io/packages/helm/fluktuid/openldap), o qual utiliza a imagem [osixia/openldap](https://github.com/osixia/docker-openldap) e no helm chart do [gabibbo97](https://artifacthub.io/packages/helm/gabibbo97/ldap-account-manager), o qual utiliza a imagem [ldap account manager](https://hub.docker.com/r/ldapaccountmanager/lam).
+
+Portanto, para informações/configurações adicionais, como variáveis de ambiente, pode-se acessar esses links.
 
 ---
 
-## Ingress
+## Arquivo `values.yaml`
 
-A implementação do [fluktuid](https://artifacthub.io/packages/helm/fluktuid/openldap) não utiliza o Ingress, então, foi necessário criar o arquivo `ingress.yaml` para configurá-lo. Para isso, foi utilizado como referência a documentação do [kubernetes](https://kubernetes.io/docs/concepts/services-networking/ingress/#simple-fanout).
+Para utilizar uma versão mais personalizada do openldap, é preciso haver um arquivo `values.yaml` no repositório do gitlab e modificar as seguintes configurações.
 
-Desse modo, basta incluir no arquivo `values.yaml` os seguintes campos:
+### Variáveis de Ambiente:
+
+Primeiramente, deve-se alterar os valores das variáveis de ambiente de acordo com seu contexto. Por exemplo:
+
+```
+env:
+  LDAP_LOG_LEVEL: "256"
+  LDAP_ORGANISATION: "CTIC"
+  LDAP_DOMAIN: "ctic"
+  LDAP_BASE_DN: "dc=ctic"
+  LDAP_ADMIN_PASSWORD: "123"
+  LDAP_CONFIG_PASSWORD: "12345"
+  LDAP_READONLY_USER: "false"
+  LDAP_RFC2307BIS_SCHEMA: "false"
+  LDAP_BACKEND: "mdb"
+  KEEP_EXISTING_CONFIG: "false"
+  LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
+  LDAP_SSL_HELPER_PREFIX: "ldap"
+```
+
+OBS: Além das senhas, é preciso estar atento aos valores definidos em LDAP_ORGANISATION, LDAP_DOMAIN e LDAP_BASE_DN, pois serão utilizados para criar o usuário admin do ldap.
+
+---
+
+### Persistência de Dados
+
+A persistência de dados está configurada para `/var/lib/ldap` e `/etc/ldap/slapd.d`, mas é preciso que os campos em `persistence` estejam definidos. Exemplo:
+
+```
+persistence:
+  enabled: true
+  storage: 300Mi
+```
+
+Ou seja, é preciso habilitar a persistência e definir um tamanho. Porém, caso o `storage` não seja definido, será utilizado o padrão de 100Mi.
+
+---
+
+### Ingress
+
+Caso o ingress já esteja configurado no cluster, é possível utilizá-lo por meio das seguintes configurações:
 
 ```
 ingress:
@@ -29,6 +71,28 @@ ingress:
 Em que:
 - `host` é a url indicada para acessar os serviços
 - `path` é a rota para um serviço específico
-- `pathType: Prefix` indica que a rota deve corresponder ao prefixo indicado em path, ignora `/` após o prefixo, por exemplo. Ver mais na [documentação](https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types)
+- `pathType: Prefix` indica que a rota deve corresponder ao prefixo indicado em path, ignora `/` após o prefixo, por exemplo. Ver mais na [documentação](https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types).
 - `serviceName` é o nome dado ao service utilizado pelo pod
 - `servicePort` é a porta utilizada por aquele service
+
+OBS: Apenas os campos `host` e `path` devem ser modificados.
+
+OBS2: Para acessar os serviços, é preciso mapear esse `host` no arquivo `/etc/hosts` com o IP do LoadBalancer do ingress e o `host` definido. Exemplo:
+
+```
+200.239.67.36 ldap.com
+```
+
+---
+
+## Arquivos Ldif
+
+Caso haja arquivos ldif para popular o ldap, é preciso:
+
+1. Adicionar/modificar a seguinte linha para indicar a presença de arquivos ldif:
+
+```
+customLdifFiles: true
+```
+
+2. Criar uma pasta na raiz do diretório do helm chart nomeada `ldifs` com os arquivos ldifs para popular o ldap.
