@@ -96,3 +96,26 @@ customLdifFiles: true
 ```
 
 2. Criar uma pasta na raiz do diretório do helm chart nomeada `ldifs` com os arquivos ldifs para popular o ldap.
+
+OBS: Quando é criado um arquivo de backup a partir do comando `slapcat`, o usuário admin é incluído no início do arquivo. Porém, como foi dito na seção `Variáveis de ambiente`, o usuário admin é criado ao iniciar o container, logo, é preciso excluí-lo do arquivo de backup para não ocorrer conflito na hora de adicionar esse arquivo no ldap.
+
+### Adicionar arquivos ldif
+
+Para facilitar a adição dos arquivos ldif, pode-se criar um script para ser executado por meio das seguintes configurações no arquivo `values.yaml`:
+
+```
+configldap: 
+  enabled: true
+  script:
+    ldap.sh: |
+      ldapmodify -x -D "cn=admin,cn=config" -w $LDAP_CONFIG_PASSWORD -f /container/service/slapd/assets/config/bootstrap/ldif/custom/olcDbIndex.ldif
+      ldapmodify -x -D "cn=admin,cn=config" -w $LDAP_CONFIG_PASSWORD -f /container/service/slapd/assets/config/bootstrap/ldif/custom/olcLog.ldif
+      slapadd -l /container/service/slapd/assets/config/bootstrap/ldif/custom/backup.ldif
+```
+
+Ou seja, ao habilitar o configldap, o script `ldap.sh` será criado com o conteúdo indicado após a `|`.
+Esse arquivo será colocado dentro do container em `/configldap`. Assim, quando o pod estiver rodando, não precisaria acessá-lo para essa configuração inicial, basta executar o script criado com, por exemplo:
+
+```
+kubectl exec -it `k get pods -o=name | grep openldap-ldap` -- bash /configldap/ldap.sh
+```
