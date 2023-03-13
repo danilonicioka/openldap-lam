@@ -17,9 +17,9 @@ Primeiramente, deve-se alterar os valores das variáveis de ambiente de acordo c
 ```
 env:
   LDAP_LOG_LEVEL: "256"
-  LDAP_ORGANISATION: "CTIC"
-  LDAP_DOMAIN: "ctic"
-  LDAP_BASE_DN: "dc=ctic"
+  LDAP_ORGANISATION: "EXAMPLE"
+  LDAP_DOMAIN: "example"
+  LDAP_BASE_DN: "dc=example"
   LDAP_ADMIN_PASSWORD: "123"
   LDAP_CONFIG_PASSWORD: "12345"
   LDAP_READONLY_USER: "false"
@@ -108,8 +108,6 @@ configldap:
   enabled: true
   script:
     ldap.sh: |
-      ldapmodify -x -D "cn=admin,cn=config" -w $LDAP_CONFIG_PASSWORD -f /container/service/slapd/assets/config/bootstrap/ldif/custom/olcDbIndex.ldif
-      ldapmodify -x -D "cn=admin,cn=config" -w $LDAP_CONFIG_PASSWORD -f /container/service/slapd/assets/config/bootstrap/ldif/custom/olcLog.ldif
       slapadd -l /container/service/slapd/assets/config/bootstrap/ldif/custom/backup.ldif
 ```
 
