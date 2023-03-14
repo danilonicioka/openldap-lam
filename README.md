@@ -139,22 +139,22 @@ Para automatizar o processo de deploy em um cluster Kubernetes, é necessário c
 ## Integrando um Cluster Kubernetes ao Gitlab
 Para integrar o cluster que irá conter o serviço do LDAP/LAM ao gitlab, primeiro vá na página inicial deste repositório e clique em `Infrastructure`, e logo após em `kubernetes clusters`. Como na imagem a seguir:
 
-![ldap_git](https://github.com/danilonicioka/openldap-lam/images/ldap_home.png)
+![ldap_git](https://github.com/danilonicioka/openldap-lam/blob/main/images/ldap_home.png)
 
 A tela a seguir irá aparecer, neste clique no botão `Connect a Cluster`, como a seguir:
 
-![ldap_git_1](https://github.com/danilonicioka/openldap-lam/images/ldap_home_1.png)
+![ldap_git_1](https://github.com/danilonicioka/openldap-lam/blob/main/images/ldap_home_1.png)
 
 A janela abaixo irá aparecer. Nesta, indique um nome significativo para o seu agente e clique em `create agent: ""`:
 
-![ldap_git_2](https://github.com/danilonicioka/openldap-lam/images/ldap_home_2.png)
+![ldap_git_2](https://github.com/danilonicioka/openldap-lam/blob/main/images/ldap_home_2.png)
 
 Por fim, clique em `Register`:
-![ldap_git_3](https://github.com/danilonicioka/openldap-lam/images/ldap_home_3.png)
+![ldap_git_3](https://github.com/danilonicioka/openldap-lam/blob/main/images/ldap_home_3.png)
 
 Feito tudo isso, a tela final irá aparecer, nesta há um conjunto de comandos que devem ser executados internamente ao seu cluster para que seja feita devidamente a associação com o Gitlab.
 
-![ldap_git_4](https://github.com/danilonicioka/openldap-lam/images/ldap_home_4.png)
+![ldap_git_4](https://github.com/danilonicioka/openldap-lam/blob/main/images/ldap_home_4.png)
 
 ## Pipeline
 
